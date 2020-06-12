@@ -50,36 +50,23 @@ Oracle
 Microsoft SQL Server
 ^^^^^^^^^^^^^^^^^^^^
 
--  ``SQLServerPlatform`` for version 2000 and above.
--  ``SQLServer2005Platform`` for version 2005 and above.
--  ``SQLServer2008Platform`` for version 2008 and above.
 -  ``SQLServer2012Platform`` for version 2012 and above.
 
 PostgreSQL
 ^^^^^^^^^^
 
--  ``PostgreSqlPlatform`` for all versions.
--  ``PostgreSQL91Platform`` for version 9.1 and above.
--  ``PostgreSQL92Platform`` for version 9.2 and above.
 -  ``PostgreSQL94Platform`` for version 9.4 and above.
+-  ``PostgreSQL100Platform`` for version 10.0 and above.
 
 SAP Sybase SQL Anywhere
 ^^^^^^^^^^^^^^^^^^^^^^^
 
--  ``SQLAnywherePlatform`` for version 10 and above.
--  ``SQLAnywhere11Platform`` for version 11 and above.
--  ``SQLAnywhere12Platform`` for version 12 and above.
 -  ``SQLAnywhere16Platform`` for version 16 and above.
 
 SQLite
 ^^^^^^
 
 -  ``SqlitePlatform`` for all versions.
-
-Drizzle
-^^^^^^
-
--  ``DrizzlePlatform`` for all versions.
 
 It is highly encouraged to use the platform class that matches your
 database vendor and version best. Otherwise it is not guaranteed
@@ -113,4 +100,3 @@ all the different database vendors, for example MySQL BIGINT and
 Oracle NUMBER should be handled as integer. Doctrine 2 offers a
 powerful way to abstract the database to php and back conversion,
 which is described in the next section.
-

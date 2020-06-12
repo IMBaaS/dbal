@@ -87,6 +87,21 @@ and ``delete($tableName)``:
 You can convert a query builder to its SQL string representation
 by calling ``$queryBuilder->getSQL()`` or casting the object to string.
 
+DISTINCT-Clause
+~~~~~~~~~~~~~~~
+
+The ``SELECT`` statement can be specified with a ``DISTINCT`` clause:
+
+.. code-block:: php
+
+    <?php
+
+    $queryBuilder
+        ->select('name')
+        ->distinct()
+        ->from('users')
+    ;
+
 WHERE-Clause
 ~~~~~~~~~~~~
 
@@ -317,13 +332,13 @@ Most notably you can use expressions to build nested And-/Or statements:
         ->select('id', 'name')
         ->from('users')
         ->where(
-            $queryBuilder->expr()->andX(
+            $queryBuilder->expr()->and(
                 $queryBuilder->expr()->eq('username', '?'),
                 $queryBuilder->expr()->eq('email', '?')
             )
         );
 
-The ``andX()`` and ``orX()`` methods accept an arbitrary amount
+The ``and()`` and ``or()`` methods accept an arbitrary amount
 of arguments and can be nested in each other.
 
 There is a bunch of methods to create comparisons and other SQL snippets

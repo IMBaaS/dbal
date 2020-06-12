@@ -1,0 +1,81 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Doctrine\DBAL\Tests\Schema\Visitor;
+
+use Doctrine\DBAL\Platforms\AbstractPlatform;
+use Doctrine\DBAL\Schema\ForeignKeyConstraint;
+use Doctrine\DBAL\Schema\SchemaException;
+use Doctrine\DBAL\Schema\Table;
+use Doctrine\DBAL\Schema\Visitor\DropSchemaSqlCollector;
+use PHPUnit\Framework\TestCase;
+
+/**
+ * @covers \Doctrine\DBAL\Schema\Visitor\DropSchemaSqlCollector
+ */
+class DropSchemaSqlCollectorTest extends TestCase
+{
+    public function testGetQueriesUsesAcceptedForeignKeys(): void
+    {
+        $tableOne = $this->createMock(Table::class);
+        $tableTwo = $this->createMock(Table::class);
+
+        $keyConstraintOne = $this->getStubKeyConstraint('first');
+        $keyConstraintTwo = $this->getStubKeyConstraint('second');
+
+        $platform = $this->getMockBuilder(AbstractPlatform::class)
+            ->onlyMethods(['getDropForeignKeySQL'])
+            ->getMockForAbstractClass();
+
+        $collector = new DropSchemaSqlCollector($platform);
+
+        $platform->expects(self::exactly(2))
+            ->method('getDropForeignKeySQL');
+
+        $platform->expects(self::at(0))
+            ->method('getDropForeignKeySQL')
+            ->with($keyConstraintOne, $tableOne);
+
+        $platform->expects(self::at(1))
+            ->method('getDropForeignKeySQL')
+            ->with($keyConstraintTwo, $tableTwo);
+
+        $collector->acceptForeignKey($tableOne, $keyConstraintOne);
+        $collector->acceptForeignKey($tableTwo, $keyConstraintTwo);
+
+        $collector->getQueries();
+    }
+
+    private function getStubKeyConstraint(string $name): ForeignKeyConstraint
+    {
+        $constraint = $this->createMock(ForeignKeyConstraint::class);
+
+        $constraint->expects(self::any())
+            ->method('getName')
+            ->will(self::returnValue($name));
+
+        $constraint->expects(self::any())
+            ->method('getForeignColumns')
+            ->will(self::returnValue([]));
+
+        $constraint->expects(self::any())
+            ->method('getColumns')
+            ->will(self::returnValue([]));
+
+        return $constraint;
+    }
+
+    public function testGivenForeignKeyWithZeroLengthAcceptForeignKeyThrowsException(): void
+    {
+        $collector = new DropSchemaSqlCollector(
+            $this->getMockForAbstractClass(AbstractPlatform::class)
+        );
+
+        $this->expectException(SchemaException::class);
+        $collector->acceptForeignKey(
+            $this->createMock(Table::class),
+            $this->getStubKeyConstraint('')
+        );
+    }
+}

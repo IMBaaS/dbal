@@ -35,16 +35,14 @@ the default cache instance:
     new QueryCacheProfile(0, "some key", $cache);
 
 In order for the data to actually be cached its necessary to ensure that the entire
-result set is read (the easiest way to ensure this is to use ``fetchAll``) and the statement
-object is closed:
+result set is read (the easiest way to ensure this is to use one of the ``fetchAll*()`` methods):
 
 ::
 
     <?php
     $stmt = $conn->executeCacheQuery($query, $params, $types, new QueryCacheProfile(0, "some key"));
-    $data = $stmt->fetchAll();
-    $stmt->closeCursor(); // at this point the result is cached
+    $data = $stmt->fetchAllAssociative();
 
 .. warning::
 
-    When using the cache layer not all fetch modes are supported. See the code of the `ResultCacheStatement <https://github.com/doctrine/dbal/blob/master/lib/Doctrine/DBAL/Cache/ResultCacheStatement.php>`_ for details.
+    When using the cache layer not all fetch modes are supported. See the code of the `ResultCacheStatement <https://github.com/doctrine/dbal/blob/master/src/Cache/ResultCacheStatement.php>`_ for details.
